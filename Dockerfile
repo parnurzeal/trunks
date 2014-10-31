@@ -32,7 +32,7 @@ RUN ln -s /opt/$FULLNAME/node_modules/sails/bin/sails.js /usr/local/bin/sails
 # RUN cd /opt/$FULLNAME \
 #    && bower --allow-root install
 # Configure awesomeinventory
-COPY  config/local.js /opt/$FULLNAME/config/
+COPY  local.js /opt/$FULLNAME/config/
 # PORT EXPOSE
 EXPOSE 1337
 
