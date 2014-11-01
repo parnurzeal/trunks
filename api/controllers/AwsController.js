@@ -11,7 +11,7 @@
 var AWS = require('aws-sdk');
 
 module.exports = {
-	'get_ec2': function(req,res,next){
+	'new_server': function(req,res,next){
 		// set key
 		var aws_key = {
 			'accessKeyId':'AKIAIFSQWT7ICWPVFSVA',

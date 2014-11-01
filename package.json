@@ -22,7 +22,10 @@
     "grunt-contrib-cssmin": "~0.9.0",
     "grunt-contrib-less": "0.11.1",
     "grunt-contrib-coffee": "~0.10.1",
-    "aws-sdk": "^2.0.23"
+    "aws-sdk": "^2.0.23",
+    "superagent": "^0.20.0",
+    "digitalocean-api": "^0.1.1",
+    "dockerode": "^2.0.4"
   },
   "scripts": {
     "start": "node app.js",
