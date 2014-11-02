@@ -11,9 +11,8 @@ var createTestPlanJob = function (task, cb){
     job.save(function (err){
         if( !err ) {
             cb(job.id, err);
-            return;
         }
-        console.log(" Error ", err);        
+        throw err;
     });
 };
 
@@ -55,6 +54,16 @@ module.exports = {
 	return res.json({
 	    todo: 'execute() is not implemented yet!'
 	});
+    },
+    
+    find: function (req, res){
+        var testid = req.param.id;
+        client.get('test:' + testid, function (err, data){
+            if (err){
+                throw err;
+            }
+            res.json(data);
+        });
     }
 };
 
