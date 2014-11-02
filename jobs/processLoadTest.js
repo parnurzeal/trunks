@@ -49,12 +49,23 @@ var doSiege = function (job, done){
     var logPath, siege, siegeOptions;
     var intervalHandler = registerMetricsCollector(job);
 
+    try{
+        mkdirp('/tmp/siege/log/');
+    } catch (e) {
+      console.log(e);
+    }
+
     logPath = '/tmp/siege/log/' + job.id;
 
     siegeOptions = job.data.options.split(' ');
     siegeOptions.push('--log='+logPath);
-    siegeOptions.push(job.data.url);
 
+    if (_.has(job.data, 'urlFile')){
+        siegeOptions.push('--file=');
+        siegeOptions.push(job.data.urlFile)
+    } else {
+        siegeOptions.push(job.data.url);
+    }
     siege  = spawn('siege', siegeOptions);
     console.log('Bombarding %s, with options %s', job.data.url, siegeOptions);
 
