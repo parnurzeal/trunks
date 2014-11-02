@@ -9,9 +9,9 @@
  'use strict';
 
  var DigitalOceanAPI = require('digitalocean-api');
- var api = new DigitalOceanAPI('id','secret');
- var ssh_key='your_key';
  var Docker = require('dockerode');
+ var api = new DigitalOceanAPI(process.env.DO_CLIENT_ID,process.env.DO_CLIENT_SECRET);
+ var ssh_key=process.env.TRUNKS_PUB_KEY || ''; 
 
  module.exports = {
  	'new_server':function(req,res,next){
