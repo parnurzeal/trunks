@@ -13,20 +13,20 @@
 				</div>
 				<div class="row">
 					<div class="col-md-4">Instance Name</div>
-					<div class="col-md-8"><input type="text"></div>
+					<div class="col-md-8"><input type="text" ng-model="doForm.name"></div>
 				</div>
 				<div class="row">
 					<div class="col-md-4">Client Id</div>
-					<div class="col-md-8"><input type="text"></div>
+					<div class="col-md-8"><input type="text" ng-model="doForm.clientId"></div>
 				</div>
 				<div class="row">
 					<div class="col-md-4">Client Secret</div>
-					<div class="col-md-8"><input type="text"></div>
+					<div class="col-md-8"><input type="text" ng-model="doForm.clientSecret"></div>
 				</div>
 				<div class="row">
 					<div class="col-md-4">Region</div>
 					<div class="col-md-8">
-						<select ng-options="i.id as i.name for i in regions" ng-model="regions">
+						<select ng-options="i as i.name for i in regions" ng-model="doForm.region">
 							<option value="">Select</option>
 						</select>
 					</div>
@@ -34,18 +34,18 @@
 				<div class="row">
 					<div class="col-md-4">Size</div>
 					<div class="col-md-8">
-						<select ng-options="i.id as i.name for i in sizes" ng-model="sizes">
+						<select ng-options="i as i.name for i in sizes" ng-model="doForm.size">
 							<option value="">Select</option>
 						</select>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-4">Dockerfile.tar.gz</div>
-					<div class="col-md-8"><input type="file"></div>
+					<div class="col-md-8"><input type="file" ng-model="doForm.dockerfile"></div>
 				</div>
 				<div class="row">
 					<div class="col-md-4">URL to test</div>
-					<div class="col-md-8"><input type="text"></div>
+					<div class="col-md-8"><input type="text" ng-model="doForm.testURL"></div>
 				</div>
 				<div class="row">
 					<div class="col-md-4"></div>
@@ -69,15 +69,15 @@
 				</div>
 				<div class="row">
 					<div class="col-md-4">Docker Host</div>
-					<div class="col-md-8"><input type="text"></div>
+					<div class="col-md-8"><input type="text" ng-model="gdForm.host"></div>
 				</div>
 				<div class="row">
 					<div class="col-md-4">Dockerfile.tar.gz</div>
-					<div class="col-md-8"><input type="file"></div>
+					<div class="col-md-8"><input type="file" ng-model="gdForm.dockerfile"></div>
 				</div>
 				<div class="row">
 					<div class="col-md-4">URL to test</div>
-					<div class="col-md-8"><input type="text"></div>
+					<div class="col-md-8"><input type="text" ng-model="gdForm.testURL"></div>
 				</div>
 				<div class="row">
 					<div class="col-md-4"></div>
@@ -122,7 +122,7 @@
 	<div class="row">
 		<div class="col-md-4">Concurrency</div>
 		<div class="col-md-8">
-			<select data-ng-options="item for item in concurrencyList" data-ng-model="concurrencyList">
+			<select ng-options="item for item in concurrencyList" ng-model="selectedConcurrencyList">
 				<option value="">Select</option>
 			</select>
 		</div>
@@ -130,14 +130,14 @@
 	<div class="row">
 		<div class="col-md-4">Request Number</div>
 		<div class="col-md-8">
-			<select data-ng-options="item for item in requestNumList" data-ng-model="requestNumList">
+			<select ng-options="item for item in requestNumList" ng-model="selectedRequestNumList">
 				<option value="">Select</option>
 			</select>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-4"></div>
-		<div class="col-md-8"><button>Add</button></div>
+		<div class="col-md-8"><button ng-click="runTest()">Run</button></div>
 	</div>
 </div>
 
@@ -145,7 +145,7 @@
 
 
 <!-- results -->
-<div class="container-fluid">
+<div class="container-fluid" ng-show="showResult">
 	<div class="row">
 		<div class="col-md-12">
 			<h3>Result</h3>
@@ -164,4 +164,4 @@
 
 
 
-
+<div style="margin-top: 100px;"></div>
