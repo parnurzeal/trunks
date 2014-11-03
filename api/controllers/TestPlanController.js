@@ -2,14 +2,14 @@
  * TestPlanController
  *
  */
-
+var _ = require('lodash');
 module.exports = {
 
     /**
      * `TestPlanController.index()`
      */
     index: function (req, res) {
-	return res.view({name: 'fhello'});
+        return res.view({name: 'fhello'});
     },
 
     /**
@@ -20,29 +20,29 @@ module.exports = {
             var name = req.param('name');
             var options = req.param('options');
             var url = req.param('url');
-            TestPlan.createTestPlanJob({ name: name,
-                                options: options,
-                                url: url,
-                                container: 'docker/nginx',
-                                cAdvisorEndpoint: 'http://192.168.59.103:8080/api/v1.2' 
-                              },
-                              function (result, err){
-                                  res.view('testplan/createCompleted', {result: result, err: err});
-                              });
+            TestPlanService.createTestPlanJob({ name: name,
+               options: options,
+               url: url,
+               container: 'docker/nginx',
+               cAdvisorEndpoint: 'http://192.168.59.103:8080/api/v1.2'
+               },
+               function (result, err){
+                   res.view('testplan/createCompleted', {result: result, err: err});
+               });
         } else {
-	    return res.view({name: ''});
+            return res.view({name: ''});
         }
     },
-    
+
     /**
      * `TestPlanController.execute()`
      */
     execute: function (req, res) {
-	return res.json({
-	    todo: 'execute() is not implemented yet!'
-	});
+        return res.json({
+            todo: 'execute() is not implemented yet!'
+        });
     },
-    
+
     find: function (req, res){
         var testid = req.param.id;
         client.get('test:' + testid, function (err, data){
@@ -51,6 +51,58 @@ module.exports = {
             }
             res.json(data);
         });
+    },
+
+    chart: function (req, res){
+        TestPlanService.getContainerMetrics(req.params.id, function (err, data){
+            // data is hash
+
+            var sortedKey = _.keys(data).sort();
+            
+            var chartData = _.map(sortedKey, function (item){
+                return JSON.parse(data[item]);
+            });
+            
+            res.view('testplan/chart', {data: JSON.stringify(chartData), layout:null});
+        });
+    },
+
+    chartData: function (req, res){
+        TestPlanService.getContainerMetrics(req.params.id, function (err, data){
+            if (!err){
+                res.json(JSON.parse(data));
+                return;
+            }
+            res.json({'message': 'error occured' + JSON.stringify(err)});
+        }); 
+    },
+
+    // api endpoint
+
+    getJobStatus: function (req, res){
+        // TODO: implement this.
+        // RETURN: job status. Get from Kue
+        TestPlanService.getTestJobStatus(req.params.id, function (err, job){
+            if (err){
+                res.json({ message: 'error occured', err: JSON.stringify(err)});
+                return;
+            }
+
+            res.json(job);
+        });
+    },
+
+    getJobReport: function (req, res){
+        // TODO: implement this
+        // RETURN: get from redis
+        TestPlanService.getTestResult(req.params.id, function (err, job){
+            if (err){
+                res.json({ message: 'error occured', err: JSON.stringify(err)});
+                return;
+            }
+
+            res.json(job);
+        });
+
     }
 };
-
