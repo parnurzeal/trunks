@@ -7,7 +7,7 @@ var spawn = require('child_process').spawn;
 var redis = require('redis'),
     client = redis.createClient();
 var request = require('superagent');
-
+var mkdirp = require('mkdirp');
 var NAMESPACE = 'test:';
 
 var getMetricRedisKey = function (job){
@@ -74,7 +74,7 @@ var doSiege = function (job, done){
     });
 
     siege.stderr.on('data', function (data) {
-        job.log(data);
+        job.log('' + data);
     });
 
     siege.on('exit', function (code) {
