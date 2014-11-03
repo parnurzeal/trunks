@@ -2,19 +2,6 @@
  * TestPlanController
  *
  */
-var kue = require('kue');
-var jobs = kue.createQueue();
-
-var createTestPlanJob = function (task, cb){
-    var job = jobs.create('bombard', task);
-
-    job.save(function (err){
-        if( !err ) {
-            cb(job.id, err);
-        }
-        throw err;
-    });
-};
 
 module.exports = {
 
@@ -33,7 +20,7 @@ module.exports = {
             var name = req.param('name');
             var options = req.param('options');
             var url = req.param('url');
-            createTestPlanJob({ name: name,
+            TestPlan.createTestPlanJob({ name: name,
                                 options: options,
                                 url: url,
                                 container: 'docker/nginx',
