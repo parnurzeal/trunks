@@ -80,7 +80,13 @@ module.exports.connections = {
     user: 'YOUR_POSTGRES_USER',
     password: 'YOUR_POSTGRES_PASSWORD',
     database: 'YOUR_POSTGRES_DB'
+  },
+    
+  mainRedis: {
+    host: 'localhost',
+    port: 6379
   }
+
 
 
   /***************************************************************************

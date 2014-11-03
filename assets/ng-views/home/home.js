@@ -12,8 +12,9 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
 .controller('HomeCtrl', function($scope,$http,digitaloceanAPIservice,dockerAPIservice) {
 
   $scope.targets = [];
+  $scope.testInfo = {};
 
-  $scope.concurrencyList = _.range(1, 50)
+  $scope.concurrencyList = _.range(1, 50, 5);
 
   $scope.requestNumList = [ 1, 10, 50, 100, 500, 1000, 5000, 10000, 50000 ];
 
@@ -21,6 +22,7 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
   $scope.myData = [10,20,30,40,60];
 
   $scope.showResult = false;
+  $scope.showTesting = false;
 
   // get all default options
   digitaloceanAPIservice.region_get_all()
@@ -66,7 +68,9 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
       region: $scope.doForm.region,
       size: $scope.doForm.size,
       // dockerfile: submit file to api
-      testURL: $scope.doForm.testURL
+      testURL: $scope.doForm.testURL,
+      // load testing job to be scheduled
+      job: null
     };
 
     // callback after build api finished
@@ -88,6 +92,10 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
 
   $scope.addGeneralDockerInstance = function(res) {
     console.log(res);
+    if (res instanceof Error) {
+      console.error('Error:', res);
+      return;
+    }
     // build image
     var instance = {
       type: 'general',
@@ -97,8 +105,10 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
       app_port: $scope.gdForm.app_port,
       map_port: $scope.gdForm.map_port,
       testURL: $scope.gdForm.testURL,
+      // load testing job to be scheduled
+      job: null
     };
-    
+
     done();
     function done() {
       console.log(instance);
@@ -115,12 +125,60 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
   };
 
   $scope.runTest = function() {
+    $scope.showTesting = true;
+    // $scope.testInfo.progress = 0;
+    $scope.jobs = [];
+    // var count = 0;
 
-    // callback after build api finished
-    done();
+    async.mapSeries(
+
+      $scope.targets,
+
+      function(target, cb) {
+        var data = {
+          name: target.type+'-'+(Math.random()*1000 | 0),
+          url : target.testURL,
+          options: {
+            // siege options
+            concurrent: $scope.testInfo.concurrency,
+            request: $scope.testInfo.numRequest,
+            url : target.testURL
+          },
+          // TODO: connect to results from docker build & run
+          cAdvisorUrl: target.cAdvisorUrl,
+          containerName: target.containerName
+        };
+        console.log('data:', data)
+
+        $http({
+          method: 'POST',
+          url:'/testplan',
+          data: data
+        })
+        .success(function(data){
+          target.job = data.job;
+        })
+        .error(function(res, status){
+          console.log(res,status);
+        });
+
+        // $scope.testInfo.progress = 100.0*count / $scope.targets.length;
+        // count++;
+      },
+
+      function(err, results) {
+        done();
+      }
+    );
 
     function done() {
+      $scope.showTesting = false;
       $scope.showResult = true;
+
+      // TODO: display chart from $scope.jobs
+      // - request report data
+      // - render charts
+
     }
   };
 })
@@ -137,7 +195,7 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
       var $el = $(element);
       var data = scope.data;
 
-      $el.append('<div><strong>'+data.type+'</strong></div>');
+      $el.append('<h4>'+data.type+'</h4>');
       if (data.type === 'digitalocean') {
         $el.append('<div>'+data.name+'</div>');
         $el.append('<div>'+data.clientId+'</div>');
@@ -146,6 +204,7 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
         $el.append('<div>'+data.testURL+'</div>');
       } else if (data.type === 'general') {
         $el.append('<div>'+data.host+'</div>');
+        $el.append('<div>'+data.port+'</div>');
         $el.append('<div>'+data.testURL+'</div>');
       }
     }
