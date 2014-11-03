@@ -14,7 +14,8 @@
     "bootstrap": "~3.3.0",
     "d3": "~3.4.13",
     "lodash": "~2.4.1",
-    "ngUpload": "~0.5.11"
+    "ngUpload": "~0.5.11",
+    "async": "~0.9.0"
   },
   "name": "trunks",
   "version": "0.0.0",

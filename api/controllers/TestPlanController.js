@@ -3,6 +3,9 @@
  *
  */
 var _ = require('lodash');
+var redis = require('redis'),
+    client = redis.createClient();
+
 module.exports = {
 
     /**
@@ -16,6 +19,7 @@ module.exports = {
      * `TestPlanController.create()`
      */
     create: function (req, res) {
+        console.log('hey');
         if (req.method == "POST"){
             var name = req.param('name');
             var options = req.param('options');
@@ -58,11 +62,11 @@ module.exports = {
             // data is hash
 
             var sortedKey = _.keys(data).sort();
-            
+
             var chartData = _.map(sortedKey, function (item){
                 return JSON.parse(data[item]);
             });
-            
+
             res.view('testplan/chart', {data: JSON.stringify(chartData), layout:null});
         });
     },
@@ -71,12 +75,12 @@ module.exports = {
         TestPlanService.getContainerMetrics(req.params.id, function (err, data){
 
             var sortedKey = _.keys(data).sort();
-            
+
             var chartData = _.map(sortedKey, function (item){
                 return JSON.parse(data[item]);
             });
             res.json(chartData);
-        }); 
+        });
     },
 
     // api endpoint
@@ -115,10 +119,10 @@ module.exports = {
                });
     },
 
-    
+
     chartData2: function (req, res){
         TestPlanService.getContainerMetrics(req.params.id, function (err, data){
-            var sortedKey = _.keys(data).sort();            
+            var sortedKey = _.keys(data).sort();
             var chartData = _.map(sortedKey, function (item){
                 return JSON.parse(data[item]);
             });
@@ -128,7 +132,7 @@ module.exports = {
             console.log(lenChart);
             var intervalInNs = getInterval(cur.timestamp, prev.timestamp);
             res.json({cpu: (cur.cpu.usage.total - prev.cpu.usage.total) / intervalInNs});
-        }); 
+        });
     },
 };
 

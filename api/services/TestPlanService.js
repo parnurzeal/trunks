@@ -30,14 +30,14 @@ var convertTestParamsToSiege = function (params) {
     if (_.has(params, 'url') && !_.isEmpty(params, 'url')){
         siegeParam.push(params.url);
     }
-    
+
     return siegeParam.join(' ');
 };
 
 
 module.exports = {
     createTestPlanJob: function (task, cb){
-        task.options = convertTestParamsToSiege(task);
+        task.options = convertTestParamsToSiege(task.options);
         var job = jobs.create('bombard', task);
         job.save(function (err){
             if( !err ) {
@@ -62,5 +62,5 @@ module.exports = {
         kue.Job.get(jobId, cb);
     },
 
-    
+
 };
