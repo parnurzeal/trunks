@@ -1,0 +1,167 @@
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6">
+
+
+			<!-- digital ocean settings -->
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-12">
+						<h3>DigitalOcean</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">Instance Name</div>
+					<div class="col-md-8"><input type="text"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">Client Id</div>
+					<div class="col-md-8"><input type="text"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">Client Secret</div>
+					<div class="col-md-8"><input type="text"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">Region</div>
+					<div class="col-md-8">
+						<select ng-options="i.id as i.name for i in regions" ng-model="regions">
+							<option value="">Select</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">Size</div>
+					<div class="col-md-8">
+						<select ng-options="i.id as i.name for i in sizes" ng-model="sizes">
+							<option value="">Select</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">Dockerfile.tar.gz</div>
+					<div class="col-md-8"><input type="file"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">URL to test</div>
+					<div class="col-md-8"><input type="text"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-4"></div>
+					<div class="col-md-8"><button ng-click="addDigitalOceanInstance()">Add</button></div>
+				</div>
+			</div>
+
+
+
+		</div>
+		<div class="col-md-6">
+
+
+
+			<!-- general docker -->
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-12">
+						<h3>General Docker</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">Docker Host</div>
+					<div class="col-md-8"><input type="text"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">Dockerfile.tar.gz</div>
+					<div class="col-md-8"><input type="file"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">URL to test</div>
+					<div class="col-md-8"><input type="text"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-4"></div>
+					<div class="col-md-8"><button ng-click="addGeneralDockerInstance()">Add</button></div>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+</div>
+
+
+<!-- current target -->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<h3>Current Target</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+
+
+			<target data="target" ng-repeat="target in targets"></target>
+
+
+		</div>
+	</div>
+</div>
+
+
+
+
+<!-- run test settings -->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<h3>Run Test</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">Concurrency</div>
+		<div class="col-md-8">
+			<select data-ng-options="item for item in concurrencyList" data-ng-model="concurrencyList">
+				<option value="">Select</option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">Request Number</div>
+		<div class="col-md-8">
+			<select data-ng-options="item for item in requestNumList" data-ng-model="requestNumList">
+				<option value="">Select</option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4"></div>
+		<div class="col-md-8"><button>Add</button></div>
+	</div>
+</div>
+
+
+
+
+<!-- results -->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<h3>Result</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+
+
+			<bars-chart chart-data="myData" ></bars-chart>
+
+
+		</div>
+	</div>
+</div>
+
+
+
+
