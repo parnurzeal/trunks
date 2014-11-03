@@ -37,7 +37,8 @@ var convertTestParamsToSiege = function (params) {
 
 module.exports = {
     createTestPlanJob: function (task, cb){
-        task.options = convertTestParamsToSiege(task.options);
+        task.options = convertTestParamsToSiege(task);
+        console.log(task);
         var job = jobs.create('bombard', task);
         job.save(function (err){
             if( !err ) {
@@ -61,6 +62,4 @@ module.exports = {
     getTestJobStatus: function (jobId, cb){
         kue.Job.get(jobId, cb);
     },
-
-
 };
