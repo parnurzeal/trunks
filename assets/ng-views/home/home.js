@@ -20,6 +20,7 @@ angular.module('myApp.home', ['ngRoute'])
   // test chart data
   $scope.myData = [10,20,30,40,60];
 
+  $scope.showResult = false;
 
   // get all default options
   digitaloceanAPIservice.region_get_all()
@@ -59,13 +60,31 @@ angular.module('myApp.home', ['ngRoute'])
     // build image
     var instance = {
       type: 'digitalocean',
-      name: 'Instance name',
-      clientId: '1234',
-      clientSecret: 'secret',
-      region: $scope.regions[0],
-      size: $scope.sizes[0],
+      name: $scope.doForm.name,
+      clientId: $scope.doForm.clientId,
+      clientSecret: $scope.doForm.clientSecret,
+      region: $scope.doForm.region,
+      size: $scope.doForm.size,
       // dockerfile: submit file to api
-      testURL: 'test.com'
+      testURL: $scope.doForm.testURL
+    };
+
+    // callback after build api finished
+    done();
+
+    function done() {
+      $scope.targets.push(instance);
+      $scope.doForm = {};
+    }
+  };
+
+  $scope.addGeneralDockerInstance = function() {
+    // build image
+    var instance = {
+      type: 'general',
+      host: $scope.gdForm.host,
+      // dockerfile: submit file to api
+      testURL: $scope.gdForm.testURL,
     };
 
     // callback after build api finished
@@ -76,20 +95,14 @@ angular.module('myApp.home', ['ngRoute'])
     }
   };
 
-  $scope.addGeneralDockerInstance = function() {
-    // build image
-    var instance = {
-      type: 'general',
-      host: '123.234.12.23',
-      // dockerfile: submit file to api
-      testURL: 'test.com'
-    };
+
+  $scope.runTest = function() {
 
     // callback after build api finished
     done();
 
     function done() {
-      $scope.targets.push(instance);
+      $scope.showResult = true;
     }
   };
 })
@@ -112,8 +125,10 @@ angular.module('myApp.home', ['ngRoute'])
         $el.append('<div>'+data.clientId+'</div>');
         $el.append('<div>'+data.region.name+'</div>');
         $el.append('<div>'+data.size.name+'</div>');
+        $el.append('<div>'+data.testURL+'</div>');
       } else if (data.type === 'general') {
         $el.append('<div>'+data.host+'</div>');
+        $el.append('<div>'+data.testURL+'</div>');
       }
     }
   };
