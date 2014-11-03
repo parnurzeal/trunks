@@ -51,6 +51,9 @@ module.exports = {
  			Image: tag,
  			name: tag
  		},function(err, container){
+ 			if(err){
+ 				return res.json(500,err);
+ 			}
  			container.attach({
  				stream: true,
  				stdout: true,
@@ -67,7 +70,7 @@ module.exports = {
  					//PublishAllPorts: true
  				}, function(err,data){
  					if(err) {
- 						return res.json(err);
+ 						return res.json(500,err);
  					}
  					return res.json(200,'Finished starting container');
  				});
