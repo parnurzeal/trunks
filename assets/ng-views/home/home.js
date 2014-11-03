@@ -193,14 +193,19 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
       // - request report data
       // - render charts
 
+      $http.get('/testplan/getJobReport/' + target.job.id).then(function (resp){
+          // display resp test report
+      });
+
+        
+      $http.get('/testplan/chartData/' + target.job.id).then(function (resp){
+        // convert data to chart
+        var d = getCpuTotalUsage(resp.data);
+        drawLineChart(['Time', 'CPU Usage'], d, 'ffff', '%'); 
+      });
+
     }
   };
-
-  $http.get('/testplan/chartData/69').then(function (resp){
-            // convert data to chart
-      var d = getCpuTotalUsage(resp.data);
-      drawLineChart(['Time', 'CPU Usage'], d, 'ffff', '%'); 
-  });
 })
 
 
