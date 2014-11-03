@@ -1,10 +1,13 @@
 var _ = require('lodash');
-
+var redisConf = sails.config.connections.mainRedis;
 var redis = require('redis'),
-    client = redis.createClient();
+    client = redis.createClient(redisConf.port, redisConf.host);
 
 var kue  = require('kue'),
-    jobs = kue.createQueue();
+    jobs = kue.createQueue({redis: {
+        port: redisConf.port,
+        host: redisConf.host
+    }});
 
 var convertTestParamsToSiege = function (params) {
     var siegeParam = [];
@@ -38,11 +41,11 @@ var convertTestParamsToSiege = function (params) {
 
 module.exports = {
     createTestPlanJob: function (task, cb){
-        task.params = convertParamsToSiege(task.params);
+        task.params = convertTestParamsToSiege(task.params);
         var job = jobs.create('bombard', task);
         job.save(function (err){
             if( !err ) {
-                cb(job.id, err);
+                cb(job, err);
                 return;
             }
             throw err;
@@ -62,4 +65,6 @@ module.exports = {
     getTestJobStatus: function (jobId, cb){
         kue.Job.get(jobId, cb);
     },
+
+    
 };

@@ -26,8 +26,8 @@ module.exports = {
                container: 'docker/nginx',
                cAdvisorEndpoint: 'http://192.168.59.103:8080/api/v1.2'
                },
-               function (result, err){
-                   res.view('testplan/createCompleted', {result: result, err: err});
+               function (job, err){
+                   res.json({job: job, err: err});
                });
         } else {
             return res.view({name: ''});
@@ -69,11 +69,13 @@ module.exports = {
 
     chartData: function (req, res){
         TestPlanService.getContainerMetrics(req.params.id, function (err, data){
-            if (!err){
-                res.json(JSON.parse(data));
-                return;
-            }
-            res.json({'message': 'error occured' + JSON.stringify(err)});
+
+            var sortedKey = _.keys(data).sort();
+            
+            var chartData = _.map(sortedKey, function (item){
+                return JSON.parse(data[item]);
+            });
+            res.json(chartData);
         }); 
     },
 
@@ -103,6 +105,17 @@ module.exports = {
 
             res.json(job);
         });
-
+    },
+    createNewJob: function (req, res){
+        TestPlanService.createTestPlanJob({ name: 'New Jobx',
+                                            concurrent: 5,
+                                            duration: '30s',
+                                            url: 'http://192.168.59.103',
+                                            container: 'docker/nginx',
+                                            cAdvisorEndpoint: 'http://192.168.59.103:8080/api/v1.2'
+                                          },
+               function (job, err){
+                   res.json({message: 'job created with id: '+ job.id});
+               });
     }
 };
