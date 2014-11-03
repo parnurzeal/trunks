@@ -110,7 +110,7 @@ module.exports = {
         TestPlanService.createTestPlanJob({ name: 'New Jobx',
                                             concurrent: 5,
                                             duration: '30s',
-                                            url: 'http://192.168.59.103',
+                                            url: 'http://192.168.59.103/',
                                             container: 'docker/nginx',
                                             cAdvisorEndpoint: 'http://192.168.59.103:8080/api/v1.2'
                                           },

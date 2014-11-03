@@ -11,27 +11,23 @@ var kue  = require('kue'),
 
 var convertTestParamsToSiege = function (params) {
     var siegeParam = [];
-    if (!_.isEmpty(params, 'concurrent')){
+    if (_.has(params, 'concurrent') && !_.isEmpty(params, 'concurrent')){
         siegeParam.push('--concurrent='+params.concurrent);
     }
 
-    if (!_.isEmpty(params, 'request')){
+    if (_.has(params, 'request') && !_.isEmpty(params, 'request')){
         siegeParam.push('--request=' + params.request);
     }
 
-    if (!_.isEmpty(params, 'time')){
+    if (_.has(params, 'time') &&  !_.isEmpty(params, 'time')){
         siegeParam.push('--time='+params.time);
     }
 
-    if (!_.isEmpty(params, 'urlFile')){
+    if (_.has(params, 'urlFile') && !_.isEmpty(params, 'urlFile')){
         siegeParam.push('--u='+params.urlFile);
     }
 
-    if (!_.isEmpty(params, 'urlFile')){
-        siegeParam.push('--u='+params.urlFile);
-    }
-
-    if (!_.isEmpty(params, 'url')){
+    if (_.has(params, 'url') && !_.isEmpty(params, 'url')){
         siegeParam.push(params.url);
     }
     
@@ -41,7 +37,7 @@ var convertTestParamsToSiege = function (params) {
 
 module.exports = {
     createTestPlanJob: function (task, cb){
-        task.params = convertTestParamsToSiege(task.params);
+        task.options = convertTestParamsToSiege(task);
         var job = jobs.create('bombard', task);
         job.save(function (err){
             if( !err ) {
