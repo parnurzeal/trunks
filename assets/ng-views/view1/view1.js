@@ -14,18 +14,23 @@ angular.module('myApp.view1', ['ngRoute'])
 	console.log(digitaloceanAPIservice);
 	digitaloceanAPIservice.region_get_all()
 	.success(function(data){
-		console.log(data);
+		$scope.regions = data;
+		$scope.myRegion = $scope.regions[0];
 	})
 	.error(function(res, status){
 		console.log(res,status);
 	});
-	digitaloceanAPIservice.image_get_all()
+
+	digitaloceanAPIservice.size_get_all()
 	.success(function(data){
+		$scope.sizes= data;
+		$scope.mySize = $scope.sizes[0];
 		console.log(data);
 	})
 	.error(function(res, status){
 		console.log(res,status);
 	});
+
 	digitaloceanAPIservice.docker_list_image()
 	.success(function(data){
 		console.log(data);

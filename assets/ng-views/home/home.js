@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.home', ['ngRoute'])
+angular.module('myApp.home', ['ngRoute','ngUpload'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/home', {
@@ -9,7 +9,7 @@ angular.module('myApp.home', ['ngRoute'])
   });
 }])
 
-.controller('HomeCtrl', function($scope,digitaloceanAPIservice) {
+.controller('HomeCtrl', function($scope,$http,digitaloceanAPIservice) {
 
   $scope.targets = [];
 
@@ -56,7 +56,7 @@ angular.module('myApp.home', ['ngRoute'])
   });
 
 
-  $scope.addDigitalOceanInstance = function() {
+  $scope.addDigitalOceanInstance = function(res) {
     // build image
     var instance = {
       type: 'digitalocean',
@@ -78,23 +78,29 @@ angular.module('myApp.home', ['ngRoute'])
     }
   };
 
-  $scope.addGeneralDockerInstance = function() {
+  // add default value
+  $scope.gdForm={};
+  $scope.gdForm.host = 'http://128.199.141.116';
+  $scope.gdForm.port = '4243';
+  $scope.gdForm.tag = 'test';
+
+  $scope.addGeneralDockerInstance = function(res) {
+    console.log(res);
     // build image
     var instance = {
       type: 'general',
       host: $scope.gdForm.host,
-      // dockerfile: submit file to api
+      port: $scope.gdForm.port,
+      tag: $scope.gdForm.tag,
       testURL: $scope.gdForm.testURL,
     };
-
-    // callback after build api finished
+    
     done();
-
     function done() {
+      console.log(instance);
       $scope.targets.push(instance);
     }
   };
-
 
   $scope.runTest = function() {
 

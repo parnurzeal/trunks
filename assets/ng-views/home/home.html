@@ -67,22 +67,29 @@
 						<h3>General Docker</h3>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-md-4">Docker Host</div>
-					<div class="col-md-8"><input type="text" ng-model="gdForm.host"></div>
-				</div>
-				<div class="row">
-					<div class="col-md-4">Dockerfile.tar.gz</div>
-					<div class="col-md-8"><input type="file" ng-model="gdForm.dockerfile"></div>
-				</div>
-				<div class="row">
-					<div class="col-md-4">URL to test</div>
-					<div class="col-md-8"><input type="text" ng-model="gdForm.testURL"></div>
-				</div>
-				<div class="row">
-					<div class="col-md-4"></div>
-					<div class="col-md-8"><button ng-click="addGeneralDockerInstance()">Add</button></div>
-				</div>
+				<form role="form" ng-upload="addGeneralDockerInstance(content)" action="/docker/docker_build_image">
+					<div class="form-group">
+						<label for="dockerhostInput">Docker Host</label>
+						<input ng-model="gdForm.host" type="text" name="host" class="form-control" id="dockerhostInput">
+					</div>
+					<div class="form-group">
+						<label for="portInput">Docker Port</label>
+						<input ng-model="gdForm.port" type="text" name="port" class="form-control" id="portInput" >
+					</div>
+					<div class="form-group">
+						<label for="dockerfileInput">Dockerfile.tar.gz</label>
+						<input ng-model="gdForm.dockerfile" type="file" name="dockerfile" class="form-control" id="dockerfileInput" >
+					</div>
+					<div class="form-group">
+						<label for="tagInput">Tag name</label>
+						<input ng-model="gdForm.tag" type="text" name="tag" class="form-control" id="tagInput" >
+					</div>
+					<div class="form-group">
+						<label for="testingUrlInput">URL to test</label>
+						<input ng-model="gdForm.testURL" type="text" class="form-control" id="testingUrlInput">
+					</div>
+					<button type="submit" value="Upload" ng-disabled="$isLoading" class="btn btn-default">Add</button>
+				</form>
 			</div>
 
 
