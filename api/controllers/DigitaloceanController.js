@@ -49,9 +49,11 @@
  		});
  	},
  	'docker_build_image':function(req,res,next){
- 		
+		console.log(req);
+		return res.json(200); 		
 		var dockerfile=__dirname +'/dockerfile.tar';
 		console.log(dockerfile);
+
  		var docker = new Docker({host: 'http://128.199.141.116', port: '4243'});
  		docker.buildImage(dockerfile, {t: 'test'}, function(dk_err,dk_data){
  			if(dk_err) {
