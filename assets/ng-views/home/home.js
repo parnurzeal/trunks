@@ -195,6 +195,12 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
 
     }
   };
+
+  $http.get('/testplan/chartData/69').then(function (resp){
+            // convert data to chart
+      var d = getCpuTotalUsage(resp.data);
+      drawLineChart(['Time', 'CPU Usage'], d, 'ffff', '%'); 
+  });
 })
 
 
@@ -268,4 +274,90 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
   };
   return directiveDefinitionObject;
 });
+window.charts = {};
 
+// from cAdvisor
+function drawLineChart(seriesTitles, data, elementId, unit) {
+  var min = Infinity;
+  var max = -Infinity;
+  for (var i = 0; i < data.length; i++) {
+    // Convert the first column to a Date.
+    if (data[i] != null) {
+      data[i][0] = new Date(data[i][0]);
+    }
+
+    // Find min, max.
+    for (var j = 1; j < data[i].length; j++) {
+      var val = data[i][j];
+      if (val < min) {
+        min = val;
+      }
+      if (val > max) {
+        max = val;
+      }
+    }
+  }
+
+  // We don't want to show any values less than 0 so cap the min value at that.
+  // At the same time, show 10% of the graph below the min value if we can.
+  var minWindow = min - (max - min) / 10;
+  if (minWindow < 0) {
+    minWindow = 0;
+  }
+
+  // Add the definition of each column and the necessary data.
+  var dataTable = new google.visualization.DataTable();
+  dataTable.addColumn('datetime', seriesTitles[0]);
+  for (var i = 1; i < seriesTitles.length; i++) {
+    dataTable.addColumn('number', seriesTitles[i]);
+  }
+  dataTable.addRows(data);
+
+  // Create and draw the visualization.
+  if (!(elementId in window.charts)) {
+    window.charts[elementId] = new google.visualization.LineChart(document.getElementById(elementId));
+  }
+
+  var opts = {
+    curveType: 'function',
+    height: 300,
+    focusTarget: "category",
+    vAxis: {
+      title: unit,
+      viewWindow: {
+        min: minWindow,
+      },
+    },
+    legend: {
+      position: 'bottom',
+    },
+  };
+
+  window.charts[elementId].draw(dataTable, opts);
+}
+
+// Gets the length of the interval in nanoseconds.
+function getInterval(current, previous) {
+  var cur = new Date(current);
+  var prev = new Date(previous);
+
+  // ms -> ns.
+  return (cur.getTime() - prev.getTime()) * 1000000;
+}
+
+// Draw the graph for CPU usage.
+function getCpuTotalUsage (stats) {
+  var titles = ["Time", "Total"];
+  var data = [];
+  for (var i = 1; i < stats.length; i++) {
+    var cur = stats[i];
+    var prev = stats[i - 1];
+    var intervalInNs = getInterval(cur.timestamp, prev.timestamp);
+
+    var elements = [];
+    elements.push(cur.timestamp);
+    elements.push((cur.cpu.usage.total - prev.cpu.usage.total) / intervalInNs);
+    data.push(elements);
+  }
+  return data;
+}
