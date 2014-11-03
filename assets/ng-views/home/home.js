@@ -9,7 +9,7 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
   });
 }])
 
-.controller('HomeCtrl', function($scope,$http,digitaloceanAPIservice) {
+.controller('HomeCtrl', function($scope,$http,digitaloceanAPIservice,dockerAPIservice) {
 
   $scope.targets = [];
 
@@ -83,6 +83,8 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
   $scope.gdForm.host = 'http://128.199.141.116';
   $scope.gdForm.port = '4243';
   $scope.gdForm.tag = 'test';
+  $scope.gdForm.app_port = '11002';
+  $scope.gdForm.map_port = '8080';
 
   $scope.addGeneralDockerInstance = function(res) {
     console.log(res);
@@ -92,12 +94,22 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
       host: $scope.gdForm.host,
       port: $scope.gdForm.port,
       tag: $scope.gdForm.tag,
+      app_port: $scope.gdForm.app_port,
+      map_port: $scope.gdForm.map_port,
       testURL: $scope.gdForm.testURL,
     };
     
     done();
     function done() {
       console.log(instance);
+      dockerAPIservice.get_container_info(instance.host,instance.port,instance.tag)
+      .success(function(data){
+        console.log(data);
+      })
+      .error(function(res, status){
+        console.log(res,status);
+      });
+
       $scope.targets.push(instance);
     }
   };
