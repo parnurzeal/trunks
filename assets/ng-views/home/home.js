@@ -165,7 +165,7 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
 
         $http({
           method: 'POST',
-          url:'/testplan',
+          url:'/testplan/create',
           data: data
         })
         .success(function(data){

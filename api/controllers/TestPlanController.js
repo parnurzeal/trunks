@@ -24,11 +24,14 @@ module.exports = {
             var name = req.param('name');
             var options = req.param('options');
             var url = req.param('url');
+            var cAdvisorUrl = req.param('cAdvisorUrl');
+            var containerName = req.param('containerName');
+            var containerId = req.param('containerId');
             TestPlanService.createTestPlanJob({ name: name,
                options: options,
                url: url,
-               container: 'docker/nginx',
-               cAdvisorEndpoint: 'http://192.168.59.103:8080/api/v1.2'
+               container: 'docker'+containerName,
+               cAdvisorEndpoint: cAdvisorUrl+'/api/v1.2'
                },
                function (job, err){
                    res.json({job: job, err: err});
