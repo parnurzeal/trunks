@@ -1,0 +1,11 @@
+{
+    "name": "general-1",
+    "options": {
+        "concurrent": "1",
+        "request": "50000"
+    },
+    "url": "http://128.199.141.116:11022",
+    "cAdvisorUrl": "http://128.199.141.116:8080",
+    "containerName": "/test",
+    "containerId": "5082e0af6b0e2aa9966dad11e26570f84d45ae67de8cb274500d01005a04cd89"
+}

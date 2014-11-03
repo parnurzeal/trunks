@@ -77,6 +77,7 @@ module.exports = {
  			})
  		});
  	},
+ 	// curl -F "host=http://128.199.141.116" -F "port=4243" localhost:1337/docker/docker_build_image_cAdvisor
  	'docker_build_image_cAdvisor':function(req,res,next){
  		var dk_host = req.param('host');
  		var dk_port = req.param('port');
@@ -94,6 +95,7 @@ module.exports = {
  			});
  		});
  	},
+ 	// curl -F "host=http://128.199.141.116" -F "port=4243" localhost:1337/docker/docker_run_cAdvisor
  	'docker_run_cAdvisor':function(req,res,next){
 	 	var dk_host = req.param('host');
 	 	var dk_port = req.param('port');

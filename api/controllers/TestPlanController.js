@@ -27,6 +27,7 @@ module.exports = {
             var cAdvisorUrl = req.param('cAdvisorUrl');
             var containerName = req.param('containerName');
             var containerId = req.param('containerId');
+            console.log('All params:',req.params);
             TestPlanService.createTestPlanJob({ name: name,
                options: options,
                url: url,
