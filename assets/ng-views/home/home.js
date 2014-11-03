@@ -87,8 +87,9 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
   $scope.gdForm.host = 'http://128.199.141.116';
   $scope.gdForm.port = '4243';
   $scope.gdForm.tag = 'test';
-  $scope.gdForm.app_port = '11002';
-  $scope.gdForm.map_port = '8080';
+  $scope.gdForm.app_port = '8080';
+  $scope.gdForm.map_port = '11022';
+  $scope.gdForm.testURL = 'http://128.199.141.116:11022';
 
   $scope.addGeneralDockerInstance = function(res) {
     console.log(res);
@@ -111,16 +112,24 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
 
     done();
     function done() {
-      console.log(instance);
-      dockerAPIservice.get_container_info(instance.host,instance.port,instance.tag)
+      dockerAPIservice.docker_run(instance.host,instance.port,instance.tag, instance.app_port, instance.map_port)
       .success(function(data){
         console.log(data);
+        console.log(instance);
+        dockerAPIservice.get_container_info(instance.host,instance.port,instance.tag)
+        .success(function(data){
+          console.log(data);
+          instance['id'] = data.Id;
+          instance['name'] = data.Names[0];
+          $scope.targets.push(instance);
+        })
+        .error(function(res, status){
+          console.log(res,status);
+        });
       })
       .error(function(res, status){
         console.log(res,status);
       });
-
-      $scope.targets.push(instance);
     }
   };
 
@@ -129,6 +138,8 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
     // $scope.testInfo.progress = 0;
     $scope.jobs = [];
     // var count = 0;
+    console.log($scope.targets);
+
 
     async.mapSeries(
 
@@ -157,6 +168,7 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
         })
         .success(function(data){
           target.job = data.job;
+          console.log(target);
         })
         .error(function(res, status){
           console.log(res,status);
