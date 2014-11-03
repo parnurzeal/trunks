@@ -82,8 +82,6 @@ module.exports = {
     // api endpoint
 
     getJobStatus: function (req, res){
-        // TODO: implement this.
-        // RETURN: job status. Get from Kue
         TestPlanService.getTestJobStatus(req.params.id, function (err, job){
             if (err){
                 res.json({ message: 'error occured', err: JSON.stringify(err)});
@@ -95,8 +93,6 @@ module.exports = {
     },
 
     getJobReport: function (req, res){
-        // TODO: implement this
-        // RETURN: get from redis
         TestPlanService.getTestResult(req.params.id, function (err, job){
             if (err){
                 res.json({ message: 'error occured', err: JSON.stringify(err)});
@@ -108,8 +104,8 @@ module.exports = {
     },
     createNewJob: function (req, res){
         TestPlanService.createTestPlanJob({ name: 'New Jobx',
-                                            concurrent: 5,
-                                            duration: '30s',
+                                            concurrent: 20,
+                                            time: '30s',
                                             url: 'http://192.168.59.103/',
                                             container: 'docker/nginx',
                                             cAdvisorEndpoint: 'http://192.168.59.103:8080/api/v1.2'
@@ -117,5 +113,30 @@ module.exports = {
                function (job, err){
                    res.json({message: 'job created with id: '+ job.id});
                });
-    }
+    },
+
+    
+    chartData2: function (req, res){
+        TestPlanService.getContainerMetrics(req.params.id, function (err, data){
+            var sortedKey = _.keys(data).sort();            
+            var chartData = _.map(sortedKey, function (item){
+                return JSON.parse(data[item]);
+            });
+            var lenChart = chartData.length;
+            var cur = chartData[lenChart-1];
+            var prev = chartData[lenChart-2];
+            console.log(lenChart);
+            var intervalInNs = getInterval(cur.timestamp, prev.timestamp);
+            res.json({cpu: (cur.cpu.usage.total - prev.cpu.usage.total) / intervalInNs});
+        }); 
+    },
 };
+
+// Gets the length of the interval in nanoseconds.
+function getInterval(current, previous) {
+  var cur = new Date(current);
+  var prev = new Date(previous);
+
+  // ms -> ns.
+  return (cur.getTime() - prev.getTime()) * 1000000;
+ }
