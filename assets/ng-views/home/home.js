@@ -119,8 +119,8 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
         dockerAPIservice.get_container_info(instance.host,instance.port,instance.tag)
         .success(function(data){
           console.log(data);
-          instance['id'] = data.Id;
-          instance['name'] = data.Names[0];
+          instance['containerId'] = data.Id;
+          instance['containerName'] = data.Names[0];
           $scope.targets.push(instance);
         })
         .error(function(res, status){
@@ -146,6 +146,7 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
       $scope.targets,
 
       function(target, cb) {
+        console.log(target);
         var data = {
           name: target.type+'-'+(Math.random()*1000 | 0),
           url : target.testURL,
@@ -156,8 +157,9 @@ angular.module('myApp.home', ['ngRoute','ngUpload'])
             url : target.testURL
           },
           // TODO: connect to results from docker build & run
-          cAdvisorUrl: target.cAdvisorUrl,
-          containerName: target.containerName
+          cAdvisorUrl: target.host+':8080',
+          containerName: target.containerName,
+          containerId: target.containerId
         };
         console.log('data:', data)
 
